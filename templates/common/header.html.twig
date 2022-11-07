@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <!--link rel="icon" href="#"-->
+
+    <title>Komotto theme on Bootstrap 3</title>
+
+    <!-- Bootstrap core CSS -->
+    <link href="{{asset('assets/assets/css/bootstrap.min.css')}}" rel="stylesheet">
+
+    <!-- Custom styles for this template -->
+    <link href="{{asset('assets/css/theme.min.css')}}" rel="stylesheet">
+
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css?family=Raleway:500,800" rel="stylesheet">
+
+    <!-- Icons -->
+    <link href="{{asset('assets/assets/fonts/icofont/icofont.min.css')}}" rel="stylesheet">
+
+    <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
+    <!--[if lt IE 9]>
+        <script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
+        <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+        <![endif]-->
+
+</head>
+
+<body>
+
+    <!--  NAVBAR  =============================================== -->
+    <nav class="navbar navbar-default">
+
+        <div class="container">
+
+            <!-- Brand and toggle get grouped for better mobile display -->
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle collapsed" data-toggle="collapse"
+                    data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                <a class="navbar-brand" href="#">
+                    <img src="images/main-brand.png" alt="" class="brand">
+                </a>
+            </div>
+
+            <!-- Collect the nav links, forms, and other content for toggling -->
+            <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+
+                <!-- Top panel / search / phone -->
+                <div class="top-panel">
+
+                    <div class="phone text-blue">
+                        <i class="icofont icofont-phone-circle"></i>
+                        +1 234 567 89 10
+                    </div>
+
+                    <form class="search bg-grey-light btn-material">
+                        <input type="text" class="search-form" id="top-search">
+                        <label for="top-search">search</label>
+                    </form>
+
+                    <div class="btn-cols">
+
+                        <ul class="list-btn-group">
+                        {% if app.session.get('client') is empty %}
+                            <li>
+                                <a href="#" data-toggle="modal" data-target="#myModal">
+                                    Sing up
+                                </a>
+                            </li>
+                            <li>
+                                <a href="{{ path('inscriptionClient') }}">
+                                    <b>Inscription</b>
+                                </a>
+                            </li>
+                            {% else %}
+                            <li>
+                                <a href="{{ path('logout') }}">
+                                    <b>Deconnection</b>
+                                </a>
+                            </li>
+                            {% endif %} 
+                        </ul>
+                    </div>
+                </div>
+
+                <ul class="nav navbar-nav navbar-right info-panel">
+
+                    <!-- Profile -->                        
+                    {% if app.session.get('client') is not empty %}
+                    <li class="profile">
+                        <span class="wrap">
+
+                            <!-- Image -->
+                            <span class="image bg-white">
+
+                                <!-- New message badge -->
+                                <span class="badge bg-blue hidden-xs hidden-sm">5</span>
+
+                                <span class="icon">
+                                    <i class="icofont icofont-user-alt-4 text-blue"></i>
+                                </span>
+
+                                <!--img src="images/profile/profile-img.jpg" alt=""-->
+                            </span>
+                            <!-- Info -->
+                            <span class="info">
+                                <!-- Name -->
+                                <span class="name text-uppercase">{{ app.session.get('client').nom ~ ' ' ~ app.session.get('client').prenom}}</span>
+                                <a href="#">edit profile</a>
+                            </span>
+                        </span>
+                    </li>
+
+
+                    <!-- Cart -->
+                    <li class="cart">
+
+                        <a href="#" class="cart-icon hidden-xs" data-toggle="dropdown" role="button"
+                            aria-haspopup="true" aria-expanded="false">
+
+                            <span class="badge bg-blue">{{ panierClient | length }}</span>
+
+                            <i class="icofont icofont-cart-alt"></i>
+                        </a>
+
+                        <a href="#" class="visible-xs" data-toggle="dropdown" role="button" aria-haspopup="true"
+                            aria-expanded="false">
+                            <i class="icofont icofont-cart-alt"></i>
+                            Shopping cart
+                        </a>
+
+                        <!-- Dropdown items list -->
+                        <ul class="dropdown-menu">
+
+                            {% for produit in panierClient %}
+                            <!-- Item -->
+                                <li>
+                                    <div class="wrap">
+
+                                        <!-- Image -->
+                                        <div class="image">
+                                            <img src="{{ asset('img-produit/' ~ produit.photos[0]) }}" alt="">
+                                        </div>
+
+                                        <!-- Caption -->
+                                        <div class="caption">
+                                            <span class="comp-header st-1 text-uppercase">
+                                                {{ produit.nom }}
+                                            </span>
+
+                                            <span class="price">
+                                                <span class="text-grey-dark">$</span>
+                                                {{ produit.prix }}
+                                            </span>
+                                        </div>
+
+                                        <!-- Remove btn -->
+                                        <span class="remove-btn bg-blue">
+                                        <i class="icofont icofont-bucket"></i>
+                                        <a href="{{ path('supprimerArticleCommande', {id:produit.id, page:'home'}) }}"></a>
+                                        </span>
+                                    </div>
+                                </li>
+                            {% endfor %}
+                            <li class="more-btn sdw">
+                                <a href="{{ path('affichageCommande') }}" class="btn-material btn-primary">
+                                    View order <i class="icofont icofont-check-circled"></i>
+                                </a>
+                            </li>
+                        </ul>
+                    </li>
+                {% endif %}
+                </ul>
+
+                <ul class="nav navbar-nav">
+                    <li class="active">
+                        <a href="{{ path('home') }}">
+                            home
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+                            categories <i class="icofont icofont-curved-down"></i>
+                        </a>
+                        <ul class="dropdown-menu">
+                            <li><a href="#">Man line</a></li>
+                            <li><a href="#">Woman</a></li>
+                            <li><a href="#">Jewerly</a></li>
+                            <li><a href="#">Electronics</a></li>
+                            <li><a href="#">Clothes</a></li>
+                        </ul>
+                    </li>
+                    <li>
+                        <a href="index.html" class="dropdown-toggle" data-toggle="dropdown">
+                            new
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+                            pages <i class="icofont icofont-curved-down"></i>
+                        </a>
+                        <ul class="dropdown-menu">
+                            <li><a href="shop-list.html">Shop category</a></li>
+                            <li><a href="shop-item.html">Shop item</a></li>
+                            <li><a href="card-page-step-1.html">Shopping card. Step 1</a></li>
+                            <li><a href="card-page-step-2.html">Shopping card. Step 2</a></li>
+                            <li><a href="card-page-step-3.html">Shopping card. Step 3</a></li>
+                            <li><a href="{{ path('inscriptionClient') }}">Register page</a></li>
+                            <li><a href="blog-item.html">Item blog</a></li>
+                        </ul>
+                    </li>
+                </ul>
+
+            </div><!-- /.navbar-collapse -->
+        </div><!-- /.container-fluid -->
+
+    </nav>
+    <!-- END: NAVBAR -->
